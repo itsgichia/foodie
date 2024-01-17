@@ -12,6 +12,7 @@ body {
     padding: 20px;
     background-color: #ffffff; /* White background for the container */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px; /* Rounded corners for the container */
 }
 
 header {
@@ -30,6 +31,13 @@ button {
     border: none;
     cursor: pointer;
     margin: 5px;
+    border-radius: 5px; /* Rounded corners for buttons */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background-color: #218838; /* Darker green on hover */
+    transform: scale(1.05); /* Slightly enlarge button on hover */
 }
 
 #meals {
@@ -52,9 +60,39 @@ button {
     transform: scale(1.1); /* Enlarge image on hover */
 }
 
+#meals p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px; /* Adjust as needed to control the maximum width of the text */
+    margin: 5px 0; /* Add margin between image and text */
+    text-align: center; /* Center-align the text */
+}
+
+#meals img:hover + p,
+#meals p:hover {
+    white-space: normal;
+    max-width: none;
+}
+
 #likeButton {
     margin-top: 20px;
     text-align: center;
+    transition: opacity 0.3s ease;
+}
+
+#likeButton button {
+    background-color: #007bff; /* Blue color for like button */
+    border-radius: 5px; /* Rounded corners for like button */
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#likeButton button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: scale(1.05); /* Slightly enlarge button on hover */
 }
 
 .hidden {
@@ -67,9 +105,28 @@ button {
     background-color: #ffc107; /* Yellow background for liked foods */
     border-radius: 8px; /* Rounded corners */
     text-align: center;
+    transition: background-color 0.3s ease;
 }
 
 #likedFoods p {
     color: #212529; /* Dark text color for liked foods */
     font-weight: bold;
+}
+
+#commentForm form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#commentForm input {
+    padding: 10px;
+    margin-right: 10px;
+    border-radius: 5px; /* Rounded corners for input */
+    border: 1px solid #ced4da; /* Border color */
+    transition: border-color 0.3s ease;
+}
+
+#commentForm input:focus {
+    border-color: #007bff; /* Blue border color on focus */
 }
