@@ -144,8 +144,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to find a matching meal by name
     function findMatchingMeal(name) {
         const allMeals = regionsContainer.querySelectorAll('.meal p');
+        const lowerCaseName = name.toLowerCase().trim(); // Convert to lowercase and trim
+
         for (const meal of allMeals) {
-            if (meal.textContent.trim().toLowerCase() === name) { // Trim and convert to lowercase
+            const lowerCaseMealName = meal.textContent.trim().toLowerCase(); // Trim and convert to lowercase
+            if (lowerCaseMealName.includes(lowerCaseName)) {
                 return {
                     strMeal: meal.textContent.trim(), // Trim the meal name
                     strMealThumb: meal.previousElementSibling.src,
