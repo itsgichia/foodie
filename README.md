@@ -50,7 +50,7 @@ The project consists of the following files:
 ### Author
 
 - Author: Gichia Muiruri
-- Contact: gichiamuiruri@gmail.co
+- Contact: gichiamuiruri@gmail.com
 
 ### License
 
