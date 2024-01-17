@@ -1,127 +1,114 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const categorySelector = document.getElementById('categorySelector');
-    const foodGallery = document.getElementById('foodGallery');
+document.addEventListener('DOMContentLoaded', function () {
+    const regionsContainer = document.getElementById('regions');
+    const mealsContainer = document.getElementById('meals');
+    const likeButtonContainer = document.getElementById('likeButton');
+    const likeCountElement = document.getElementById('likeCount');
+    const commentFormContainer = document.getElementById('commentForm');
+    const likedFoodsContainer = document.getElementById('likedFoods');
 
-    if (categorySelector) {
-        categorySelector.addEventListener('change', fetchAndDisplayFood);
-    } else {
-        console.error('Category selector not found.');
-    }
+    let likeCount = 0;
+    const likedFoods = [];
 
-    function fetchAndDisplayFood() {
-        const selectedCategory = categorySelector.value;
-
-        fetchFoodData(selectedCategory)
-            .then(data => displayFoodGallery(data))
-            .catch(error => console.error('Error fetching and displaying food data:', error));
-    }
-
-    function fetchFoodData(category) {
-        return fetch(`https://world.openfoodfacts.org/cgi/search.pl?category=${category}&json=1`)
-            .then(response => response.json());
-    }
-
-    function displayFoodGallery(data) {
-        // Clear previous content
-        foodGallery.innerHTML = '';
-
-        // Display food products
-        data.products.forEach(product => {
-            const foodCard = createFoodCard(product);
-            foodGallery.appendChild(foodCard);
-        });
-    }
-
-    function createFoodCard(product) {
-        const card = document.createElement('div');
-        card.className = 'card';
-
-        const cardBody = document.createElement('div');
-        cardBody.className = 'card-body';
-
-        const foodImage = createImage(product.image_url, product.product_name);
-        const commentSection = createCommentSection(product);
-        const upvoteButton = createButton('Upvote', () => upvoteProduct(product.product_name));
-
-        [foodImage, commentSection, upvoteButton].forEach(element => cardBody.appendChild(element));
-
-        card.appendChild(cardBody);
-
-        return card;
-    }
-
-    function createImage(src, alt) {
-        const image = document.createElement('img');
-        image.src = src;
-        image.className = 'card-img-top';
-        image.alt = alt;
-        return image;
-    }
-
-    function createCommentSection(product) {
-        const commentSection = document.createElement('div');
-        commentSection.className = 'comment-section';
-
-        if (product.comments && product.comments.length > 0) {
-            const commentsList = document.createElement('ul');
-            product.comments.forEach(comment => {
-                const listItem = document.createElement('li');
-                listItem.textContent = comment;
-                commentsList.appendChild(listItem);
+    // Fetch the list of meal areas
+    fetch('https://www.themealdb.com/api/json/v1/1/list.php?a=list')
+        .then(response => response.json())
+        .then(data => {
+            data.meals.forEach(region => {
+                const button = document.createElement('button');
+                button.textContent = region.strArea;
+                button.addEventListener('click', () => fetchAndDisplayMeals(region.strArea));
+                regionsContainer.appendChild(button);
             });
-            commentSection.appendChild(commentsList);
+        })
+        .catch(error => console.error('Error fetching meal areas:', error));
+
+    // Function to fetch and display meals for a specific region
+    function fetchAndDisplayMeals(region) {
+        fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${region}`)
+            .then(response => response.json())
+            .then(data => {
+                mealsContainer.innerHTML = ''; // Clear previous content
+                data.meals.forEach(meal => {
+                    const mealElement = document.createElement('div');
+                    mealElement.innerHTML = `
+                        <img src="${meal.strMealThumb}" alt="${meal.strMeal}" onclick="showLikeButton('${meal.strMeal}')">
+                        <p>${meal.strMeal}</p>
+                    `;
+                    mealsContainer.appendChild(mealElement);
+                });
+            })
+            .catch(error => console.error(`Error fetching meals for ${region}:`, error));
+    }
+
+    // Show the like button and increment like count
+    window.showLikeButton = function (mealName) {
+        const alreadyLiked = likedFoods.includes(mealName);
+
+        if (!alreadyLiked) {
+            likeCount++;
+            likedFoods.push(mealName);
+        } else {
+            likeCount--;
+            const index = likedFoods.indexOf(mealName);
+            likedFoods.splice(index, 1);
         }
 
-        const commentForm = createCommentForm(product);
-        commentSection.appendChild(commentForm);
+        likeCountElement.textContent = `${likeCount} ${likeCount === 1 ? 'like' : 'likes'}`;
+        likeButtonContainer.classList.remove('hidden');
+        commentFormContainer.innerHTML = ''; // Clear previous comment form
+        commentFormContainer.appendChild(createCommentForm(mealName));
 
-        return commentSection;
-    }
+        updateLikedFoods(); // Update the liked foods display
+        updateLikeButtonState(alreadyLiked); // Update the like button state
+    };
 
-    function createCommentForm(product) {
+    // Function to create a comment form element
+    function createCommentForm(mealName) {
         const form = document.createElement('form');
         form.addEventListener('submit', event => {
             event.preventDefault();
-            const newComment = form.querySelector('input').value;
-            product.comments = product.comments || [];
-            product.comments.push(newComment);
+            const comment = form.querySelector('input').value;
+            alert(`You commented on ${mealName}: ${comment}`);
             form.reset();
-            updateCommentSection(product);
         });
 
         const input = document.createElement('input');
         input.type = 'text';
         input.placeholder = 'Add a comment...';
 
-        const submitButton = document.createElement('button');
-        submitButton.className = 'btn btn-primary';
-        submitButton.type = 'submit';
-        submitButton.textContent = 'Add Comment';
-
-        [input, submitButton].forEach(element => form.appendChild(element));
-
+        form.appendChild(input);
         return form;
     }
 
-    function updateCommentSection(product) {
-        const commentSection = document.querySelector('.comment-section');
-        commentSection.innerHTML = '';
-        commentSection.appendChild(createCommentSection(product));
+    // Function to update the like button state
+    function updateLikeButtonState(alreadyLiked) {
+        const likeButton = document.getElementById('like');
+        likeButton.setAttribute('data-meal-name', likedFoods[likedFoods.length - 1]);
+        if (alreadyLiked) {
+            likeButton.textContent = 'Unlike';
+            likeButton.removeEventListener('click', likeButtonClickHandler);
+            likeButton.addEventListener('click', unlikeButtonClickHandler);
+        } else {
+            likeButton.textContent = 'Like';
+            likeButton.removeEventListener('click', unlikeButtonClickHandler);
+            likeButton.addEventListener('click', likeButtonClickHandler);
+        }
     }
 
-    function createButton(text, onClick) {
-        const button = document.createElement('button');
-        button.className = 'btn btn-primary';
-        button.textContent = text;
-        button.addEventListener('click', onClick);
-        return button;
+    // Event handler for the "Like" button
+    function likeButtonClickHandler() {
+        const mealName = document.getElementById('likeButton').getAttribute('data-meal-name');
+        showLikeButton(mealName);
     }
 
-    function upvoteProduct(productName) {
-        const upvotes = {};
-        upvotes[productName] = upvotes[productName] || 0;
-        upvotes[productName]++;
-        alert(`${productName} has been upvoted! Total upvotes: ${upvotes[productName]}`);
-        // Update UI to reflect the upvote count if needed
+    // Event handler for the "Unlike" button
+    function unlikeButtonClickHandler() {
+        const mealName = document.getElementById('likeButton').getAttribute('data-meal-name');
+        showLikeButton(mealName);
+    }
+
+    // Function to update the liked foods display
+    function updateLikedFoods() {
+        likedFoodsContainer.innerHTML = `<p>Liked Foods: ${likedFoods.join(', ')}</p>`;
     }
 });

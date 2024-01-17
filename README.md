@@ -21,7 +21,7 @@
 
 The project uses The Meal DB API with the following structure:
 
-- Endpoint: `https://www.themealdb.com/api/json/v1/1/filter.php?a=Malaysian`
+- Endpoint: `https://www.themealdb.com/api/json/v1/1/filter.php?a`
 
 ### Files
 
@@ -49,12 +49,12 @@ The project consists of the following files:
 
 ### Author
 
-- Author: Gichia Muiruri
-- Contact: gichiamuiruri@gmail.com
+- Author: [Your Name]
+- Contact: [Your Email]
 
 ### License
 
-This project is licensed under the MIT. See the https://choosealicense.com/licenses/mit/ for details.
+This project is licensed under the [License Type]. See the [LICENSE.md](LICENSE.md) file for details.
 
 ## Getting Started
 
@@ -69,4 +69,4 @@ We welcome contributions! Please check the [CONTRIBUTING.md](CONTRIBUTING.md) fi
 
 ## Issues
 
-If you encounter any issues or have suggestions, please create an issue on the [issue tracker](https://github.com/[your-username]/foodie/issues).
+If you encounter any issues or have suggestions, please create an issue on the [issue tracker](https://github.com/itsgichia/foodie/issues).

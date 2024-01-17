@@ -1,49 +1,75 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f5f5f5;
     margin: 0;
     padding: 0;
+    background-color: #f5f5f5; /* Light gray background color */
+    color: #343a40; /* Text color */
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff; /* White background for the container */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+header {
     text-align: center;
+    margin-bottom: 20px;
 }
 
 h1 {
-    color: #333;
+    color: #007bff; /* Blue color for the heading */
 }
 
-#mealList {
+button {
+    background-color: #28a745; /* Green color for buttons */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+}
+
+#meals {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-around;
 }
 
-.card {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+#meals img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
     margin: 10px;
-    background-color: #fff;
-    transition: transform 0.3s;
+    cursor: pointer;
+    border-radius: 8px; /* Rounded corners for images */
+    transition: transform 0.3s ease-in-out; /* Smooth transition on hover */
 }
 
-.card:hover {
-    transform: scale(1.05);
+#meals img:hover {
+    transform: scale(1.1); /* Enlarge image on hover */
 }
 
-.card-body {
-    padding: 20px;
+#likeButton {
+    margin-top: 20px;
+    text-align: center;
 }
 
-.card-img-top {
-    max-width: 100%;
-    height: auto;
-    border-bottom: 1px solid #eee;
+.hidden {
+    display: none;
 }
 
-.card-title {
-    margin-top: 15px;
-    font-size: 18px;
-    color: #333;
+#likedFoods {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #ffc107; /* Yellow background for liked foods */
+    border-radius: 8px; /* Rounded corners */
+    text-align: center;
+}
+
+#likedFoods p {
+    color: #212529; /* Dark text color for liked foods */
+    font-weight: bold;
 }

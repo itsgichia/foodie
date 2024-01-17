@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="styles.css">
-        <title>Malaysian Meals</title>
-    </head>
-    <body>
-        <div class="container mt-5">
-            <h1 class="text-center">Malaysian Meals</h1>
-            <div id="mealList" class="row mt-4"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Your Food Explorer</title>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Your Food Explorer</h1>
+        </header>
+        <div id="regions" class="flex-container"></div>
+        <div id="meals" class="flex-container"></div>
+        <div id="likeButton" class="hidden">
+            <button id="like" data-meal-name=""></button>
         </div>
-        <script src="index.js"></script>
-    </body>
+        <div id="likedFoods"></div>
+    </div>
+    <script src="index.js"></script>
+</body>
 </html>
