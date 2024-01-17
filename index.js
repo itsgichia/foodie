@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Search functionality
     searchButton.addEventListener('click', function () {
-        const searchValue = searchInput.value.trim();
+        const searchValue = searchInput.value.trim().toLowerCase(); // Convert to lowercase and trim
 
         if (searchValue !== '') {
             const matchingMeal = findMatchingMeal(searchValue);
@@ -133,7 +133,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Display the matching meal image as the first tile
                 const matchingMealElement = createMealElement(matchingMeal);
-                mealsContainer.insertBefore(matchingMealElement, mealsContainer.firstChild);
+                mealsContainer.innerHTML = ''; // Clear previous content
+                mealsContainer.appendChild(matchingMealElement);
             } else {
                 alert('Meal not found. Please try again.');
             }
@@ -144,9 +145,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function findMatchingMeal(name) {
         const allMeals = regionsContainer.querySelectorAll('.meal p');
         for (const meal of allMeals) {
-            if (meal.textContent.toLowerCase() === name.toLowerCase()) {
+            if (meal.textContent.trim().toLowerCase() === name) { // Trim and convert to lowercase
                 return {
-                    strMeal: name,
+                    strMeal: meal.textContent.trim(), // Trim the meal name
                     strMealThumb: meal.previousElementSibling.src,
                     strArea: meal.closest('.meal').querySelector('button').textContent
                 };
