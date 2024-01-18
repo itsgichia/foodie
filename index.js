@@ -85,9 +85,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const form = document.createElement('form');
         form.addEventListener('submit', event => {
             event.preventDefault();
-            const comment = form.querySelector('input').value;
-            saveComment(mealName, comment);
-            form.reset();
+            const input = form.querySelector('input');
+            if (input) {
+                const comment = input.value;
+                saveComment(mealName, comment);
+                form.reset();
+            }
         });
 
         const input = document.createElement('input');
@@ -126,7 +129,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const button = document.createElement('button');
         button.textContent = 'Remove Comment';
         button.addEventListener('click', () => {
-            const comment = document.querySelector(`#comment-${mealName} input`).value;
+            const input = document.querySelector(`#comment-${mealName} input`);
+            const comment = input ? input.value : '';
             removeComment(mealName, comment);
         });
         return button;
