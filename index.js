@@ -152,10 +152,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const comments = JSON.parse(localStorage.comments) || [];
         const mealComments = comments.filter(entry => entry.mealName === mealName);
+
         commentsList.innerHTML = '<p>Comments:</p>';
+
         mealComments.forEach(entry => {
             const commentItem = document.createElement('div');
             commentItem.textContent = entry.comment;
+
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remove';
+            removeButton.addEventListener('click', () => removeComment(mealName, entry.comment));
+
+            commentItem.appendChild(removeButton);
             commentsList.appendChild(commentItem);
         });
     }
