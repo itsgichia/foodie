@@ -49,8 +49,8 @@ The project consists of the following files:
 
 ### Author
 
-- Author: [Your Name]
-- Contact: [Your Email]
+- Author: Gichia Muiruri
+- Contact: gichiamuiruri@gmail.com
 
 ### License
 
