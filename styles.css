@@ -2,7 +2,7 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f5f5f5; /* Light gray background color */
+    background-color: #c3b0b0; /* Light gray background color */
     color: #343a40; /* Text color */
 }
 
@@ -82,7 +82,7 @@ button:hover {
 }
 
 #likeButton button {
-    background-color: #007bff; /* Blue color for like button */
+    background-color: #82a8d1; /* Blue color for like button */
     border-radius: 5px; /* Rounded corners for like button */
     padding: 10px 20px;
     color: white;

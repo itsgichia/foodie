@@ -24,29 +24,38 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(error => console.error('Error fetching meal areas:', error));
 
-    // Fetch and display meals for a specific region
+    // Search functionality
+    searchButton.addEventListener('click', () => {
+        const searchValue = searchInput.value.trim().toLowerCase();
+        if (searchValue !== '') {
+            const regionButton = Array.from(regionsContainer.children).find(button =>
+                button.textContent.trim().toLowerCase() === searchValue
+            );
+
+            if (regionButton) {
+                regionButton.click();
+            } else {
+                alert('Region not found. Please try again.');
+            }
+        }
+    });
+
+    // Function to fetch and display meals for a specific region
     function fetchAndDisplayMeals(region) {
         fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${region}`)
             .then(response => response.json())
             .then(data => {
                 mealsContainer.innerHTML = ''; // Clear previous content
                 data.meals.forEach(meal => {
-                    const mealElement = createMealElement(meal);
+                    const mealElement = document.createElement('div');
+                    mealElement.innerHTML = `
+                        <img src="${meal.strMealThumb}" alt="${meal.strMeal}" onclick="showLikeButton('${meal.strMeal}')">
+                        <p>${meal.strMeal}</p>
+                    `;
                     mealsContainer.appendChild(mealElement);
                 });
             })
             .catch(error => console.error(`Error fetching meals for ${region}:`, error));
-    }
-
-    // Function to create a meal element
-    function createMealElement(meal) {
-        const mealDiv = document.createElement('div');
-        mealDiv.innerHTML = `
-            <img src="${meal.strMealThumb}" alt="${meal.strMeal}" onclick="showLikeButton('${meal.strMeal}')">
-            <p>${meal.strMeal}</p>
-        `;
-        mealDiv.classList.add('meal');
-        return mealDiv;
     }
 
     // Show the like button and increment like count
@@ -77,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
         form.addEventListener('submit', event => {
             event.preventDefault();
             const comment = form.querySelector('input').value;
-            alert(`You commented on ${mealName}: ${comment}`);
+            saveComment(mealName, comment);
             form.reset();
         });
 
@@ -86,7 +95,65 @@ document.addEventListener('DOMContentLoaded', function () {
         input.placeholder = 'Add a comment...';
 
         form.appendChild(input);
+        form.appendChild(createRemoveButton(mealName));
+        form.appendChild(createCommentsList(mealName));
         return form;
+    }
+
+    // Function to save a comment
+    function saveComment(mealName, comment) {
+        const commentObj = { mealName, comment };
+        if (!localStorage.comments) {
+            localStorage.comments = JSON.stringify([commentObj]);
+        } else {
+            const comments = JSON.parse(localStorage.comments);
+            comments.push(commentObj);
+            localStorage.comments = JSON.stringify(comments);
+        }
+        updateCommentsList(mealName);
+    }
+
+    // Function to remove a comment
+    function removeComment(mealName, comment) {
+        const comments = JSON.parse(localStorage.comments);
+        const updatedComments = comments.filter(entry => !(entry.mealName === mealName && entry.comment === comment));
+        localStorage.comments = JSON.stringify(updatedComments);
+        updateCommentsList(mealName);
+    }
+
+    // Function to create a remove button
+    function createRemoveButton(mealName) {
+        const button = document.createElement('button');
+        button.textContent = 'Remove Comment';
+        button.addEventListener('click', () => {
+            const comment = document.querySelector(`#comment-${mealName} input`).value;
+            removeComment(mealName, comment);
+        });
+        return button;
+    }
+
+    // Function to create a comments list
+    function createCommentsList(mealName) {
+        const commentsList = document.createElement('div');
+        commentsList.id = `comment-${mealName}`;
+        commentsList.classList.add('comments-list');
+        updateCommentsList(mealName);
+        return commentsList;
+    }
+
+    // Function to update the comments list
+    function updateCommentsList(mealName) {
+        const commentsList = document.querySelector(`#comment-${mealName}`);
+        if (!commentsList) return;
+
+        const comments = JSON.parse(localStorage.comments) || [];
+        const mealComments = comments.filter(entry => entry.mealName === mealName);
+        commentsList.innerHTML = '<p>Comments:</p>';
+        mealComments.forEach(entry => {
+            const commentItem = document.createElement('div');
+            commentItem.textContent = entry.comment;
+            commentsList.appendChild(commentItem);
+        });
     }
 
     // Function to update the like button state
@@ -119,43 +186,5 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to update the liked foods display
     function updateLikedFoods() {
         likedFoodsContainer.innerHTML = `<p>Liked Foods: ${likedFoods.join(', ')}</p>`;
-    }
-
-    // Search functionality
-    searchButton.addEventListener('click', function () {
-        const searchValue = searchInput.value.trim().toLowerCase(); // Convert to lowercase and trim
-
-        if (searchValue !== '') {
-            const matchingMeal = findMatchingMeal(searchValue);
-            if (matchingMeal) {
-                const region = matchingMeal.strArea;
-                fetchAndDisplayMeals(region);
-
-                // Display the matching meal image as the first tile
-                const matchingMealElement = createMealElement(matchingMeal);
-                mealsContainer.innerHTML = ''; // Clear previous content
-                mealsContainer.appendChild(matchingMealElement);
-            } else {
-                alert('Meal not found. Please try again.');
-            }
-        }
-    });
-
-    // Function to find a matching meal by name
-    function findMatchingMeal(name) {
-        const allMeals = regionsContainer.querySelectorAll('.meal p');
-        const lowerCaseName = name.toLowerCase().trim(); // Convert to lowercase and trim
-
-        for (const meal of allMeals) {
-            const lowerCaseMealName = meal.textContent.trim().toLowerCase(); // Trim and convert to lowercase
-            if (lowerCaseMealName.includes(lowerCaseName)) {
-                return {
-                    strMeal: meal.textContent.trim(), // Trim the meal name
-                    strMealThumb: meal.previousElementSibling.src,
-                    strArea: meal.closest('.meal').querySelector('button').textContent
-                };
-            }
-        }
-        return null;
     }
 });
