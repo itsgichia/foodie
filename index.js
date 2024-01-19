@@ -43,6 +43,16 @@ function createMealContainer(meal) {
     instructionsElement.innerHTML = formatInstructions(meal);
     mealContainer.appendChild(instructionsElement);
 
+    // Create a like button and append it to the meal container
+    const likeButton = document.createElement('button');
+    likeButton.classList.add('like-button');
+    likeButton.textContent = 'Like';
+    likeButton.addEventListener('click', () => {
+        likeMeal(meal);
+        updateLikedMeals();
+    });
+    mealContainer.appendChild(likeButton);
+
     // Create a close button and append it to the meal container
     const closeButton = document.createElement('button');
     closeButton.classList.add('close-button');
@@ -54,6 +64,28 @@ function createMealContainer(meal) {
     mealContainer.appendChild(closeButton);
 
     return mealContainer;
+}
+
+// Function to store liked meals in local storage
+function likeMeal(meal) {
+    const likedMeals = JSON.parse(localStorage.getItem('likedMeals')) || [];
+    likedMeals.push(meal.strMealThumb);
+    localStorage.setItem('likedMeals', JSON.stringify(likedMeals));
+}
+
+// Function to update the liked meals section
+function updateLikedMeals() {
+    const likedMealsSection = document.getElementById('likedMeals');
+    if (!likedMealsSection) return;
+
+    const likedMeals = JSON.parse(localStorage.getItem('likedMeals')) || [];
+    likedMealsSection.innerHTML = '<p>Liked Meals:</p>';
+
+    likedMeals.forEach(mealImage => {
+        const imageElement = document.createElement('img');
+        imageElement.src = mealImage;
+        likedMealsSection.appendChild(imageElement);
+    });
 }
 
 // Function to display meal details when a meal is clicked
@@ -135,4 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => console.error(`Error fetching meals for ${region}:`, error));
     }
+
+    // Display liked meals on page load
+    updateLikedMeals();
 });
