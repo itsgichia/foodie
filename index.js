@@ -22,7 +22,21 @@ function formatIngredients(meal) {
 
 // Function to format instructions for a meal
 function formatInstructions(meal) {
-    return `<p><strong>Instructions</strong></p><p>${meal.strInstructions.replace(/(?:\r\n|\r|\n)/g, '<br>')}</p>`;
+   
+    if( meal.strInstructions.includes('${meal.strInstructions}')){
+        // Manually format instructions without HTML-like template string
+        return `<p><strong>Instructions</strong></p>${meal.strInstructions.replace(/(?:\r\n|\r|\n)/g, '<br>')}`;
+    } 
+    else {
+        // if the instruction are already formatted, return them as
+        return `<p><strong>Instructions</strong></p>${meal.strInstructions}`;
+    } 
+}
+// Function to create a modal overlay for displaying meal details
+function createModalOverlay() {
+    const modalOverlay = document.createElement('div');
+    modalOverlay.classList.add('modal-overlay');
+    return modalOverlay;
 }
 
 // Function to create a meal container element
@@ -35,13 +49,11 @@ function createMealContainer(meal) {
     const ingredientsElement = document.createElement('div');
     ingredientsElement.classList.add('ingredients');
     ingredientsElement.innerHTML = formatIngredients(meal);
-    mealContainer.appendChild(ingredientsElement);
 
     // Create and append the instructions element to the meal container
     const instructionsElement = document.createElement('div');
     instructionsElement.classList.add('instructions');
     instructionsElement.innerHTML = formatInstructions(meal);
-    mealContainer.appendChild(instructionsElement);
 
     // Create a like button and append it to the meal container
     const likeButton = document.createElement('button');
@@ -51,7 +63,6 @@ function createMealContainer(meal) {
         likeMeal(meal);
         updateLikedMeals();
     });
-    mealContainer.appendChild(likeButton);
 
     // Create a close button and append it to the meal container
     const closeButton = document.createElement('button');
@@ -59,8 +70,12 @@ function createMealContainer(meal) {
     closeButton.textContent = 'Close';
     closeButton.addEventListener('click', () => {
         const mainContainer = document.querySelector('.container');
-        mainContainer.removeChild(mealContainer);
+        mainContainer.removeChild(mealContainer.parentElement); // remove the modal overlay
     });
+
+    mealContainer.appendChild(ingredientsElement);
+    mealContainer.appendChild(instructionsElement);
+    mealContainer.appendChild(likeButton);
     mealContainer.appendChild(closeButton);
 
     return mealContainer;
@@ -96,12 +111,15 @@ function showMealDetails(mealId) {
         .then(data => {
             const meal = data.meals[0];
 
+            
             // Create a meal container using the fetched meal details
-            const mealContainer = createMealContainer(meal);
+            const modalContainer = document.createElement('div');
+            modalContainer.classList.add('modal-overlay');
+            modalContainer.appendChild(createMealContainer(meal));
 
-            // Append the meal container to the main container
+            // Append the modal container to the main container
             const mainContainer = document.querySelector('.container');
-            mainContainer.appendChild(mealContainer);
+            mainContainer.appendChild(modalContainer);
         })
         .catch(error => console.error(`Error fetching details for meal ${mealId}:`, error));
 }

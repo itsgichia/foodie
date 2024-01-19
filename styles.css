@@ -88,17 +88,26 @@ button {
     margin: 5px 0; /* Add margin between image and text */
     text-align: center; /* Center-align the text */
 }
-#meals p {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 150px; /* Adjust as needed to control the maximum width of the text */
-    margin: 5px 0; /* Add margin between image and text */
-    text-align: center; /* Center-align the text */
+
+/* Styles for the modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
 }
 
-#meals img:hover + p,
-#meals p:hover {
-    white-space: normal;
-    max-width: none;
+.meal-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 80%;
+    overflow-y: auto;
 }
